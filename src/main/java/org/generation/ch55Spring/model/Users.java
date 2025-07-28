@@ -10,26 +10,28 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name="users")
+@Table(name="usuarios")
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
+
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id", unique = true, nullable = false)
-    private Long id;
-    @Column(nullable = false)
-    private String name;
-    @Column(nullable = false, name="last_name")
-    private String lastName;
-    @Column(nullable = false)
-    private String email;
-    @Column(nullable = false)
-    private String password;
+    @Column(name = "id_usuario", nullable = false, unique = true)
+    private Long idUsuario;
 
-    //Tabla principal
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Directions> directions;
+    @Column(name = "correo_electronico", nullable = false, unique = true, length = 100)
+    private String correoElectronico;
+
+    @Column(name = "nombre_usuario", nullable = false, length = 50)
+    private String nombreUsuario;
+
+    @Column(name = "numero_telefonico", length = 10)
+    private String numeroTelefonico; // Puede ser null
+
+    @Column(name = "contrasena", nullable = false, length = 30)
+    private String contrasena;
+
 }
