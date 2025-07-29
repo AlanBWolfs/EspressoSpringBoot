@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class roles_asignadosId implements Serializable {
+public class RolesAsignadosId implements Serializable {
     private Long idUsuario;
     private Long idRol;
 }

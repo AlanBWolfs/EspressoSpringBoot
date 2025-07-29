@@ -13,10 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class roles_asignados {
+public class RolesAsignados {
 
     @EmbeddedId
-    private roles_asignadosId id;
+    private RolesAsignadosId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idUsuario")
@@ -28,5 +28,5 @@ public class roles_asignados {
     @MapsId("idRol")
     @JoinColumn(name = "id_rol", nullable = false,
             foreignKey = @ForeignKey(name = "fk_idrol"))
-    private roles_descripcion rol;
+    private RolesDescripcion rol;
 }
