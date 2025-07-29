@@ -1,0 +1,160 @@
+
+.register-wrapper {
+ display: flex;
+height: 100vh;
+ overflow: hidden;
+}
+
+.register-image {
+ flex: 1;
+ display: flex;
+ align-items: stretch;
+}
+
+.image-register {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.register-form-container {
+  flex: 1;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem 6rem; 
+}
+
+.register-title {
+  font-family: "Avigea", serif;
+  color: #133936;
+  font-size: 5rem;
+  margin-bottom: 3rem;
+  text-align: center;
+  margin: 1rem 0 3rem;
+}
+
+.label-name {
+  font-family: "Poppins";
+  color: #133936;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.name-input,
+.general-input {
+  background-color: #d9d9d9;
+  width: 100%;
+  height: 4.5rem;
+  border-radius: 3rem;
+  font-family: "Poppins";
+  font-size: 1.5rem;
+  padding: 1.6rem;
+  margin-bottom: 1.6rem;
+  box-shadow: 0px 1px 1px 1px #0000004e;
+}
+
+.button-register {
+  background-color: #133936;
+  color: aliceblue;
+  width: 100%;
+  height: 5rem;
+  border-radius: 3rem;
+  font-family: "Poppins";
+  font-size: 1.5rem;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0px 1px 1px 1px #0000004e;
+}
+
+.button-register:hover {
+  background-color: #998F76;
+}
+
+.p-login {
+  color: #133936;
+  font-family: "Poppins";
+  margin-top: 1rem;
+  font-size: 1.5rem;
+}
+
+.login {
+  color: #133936;
+  font-weight: bold;
+  font-family: "Poppins";
+  font-size: 1.5rem;
+}
+
+.login:hover {
+  text-decoration: underline;
+}
+
+.invalid-feedback{
+font-size: 1.5rem;
+font-family: "poppins";
+}
+
+
+
+@media (max-width: 1100px) {
+  .register-wrapper {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+
+  /* Ocultamos la imagen decorativa */
+  .register-image {
+    display: none;
+  }
+
+  /* Aplicamos imagen de fondo al formulario */
+  .register-form-container {
+    order: 1;
+    padding: 2rem 3rem;
+    background: 
+      linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+      url('/assets/imagen-registro.jpeg') no-repeat center/cover;
+    background-blend-mode: lighten;
+  }
+
+  .register-title {
+    font-size: 3rem;
+    margin: 1rem 0 2rem;
+  }
+
+  .button-register {
+    height: 4.5rem;
+    font-size: 1.4rem;
+  }
+
+  .invalid-feedback {
+    font-size: 1.3rem;
+  }
+}
+@media (max-height: 700px) {
+  .register-wrapper {
+    height: auto;          /* ya no se restringe a 100vh */
+    min-height: 100vh;     /* pero al menos ocupa toda la pantalla */
+    flex-direction: column;
+    overflow-y: auto;      /* ahora permite scroll si el contenido crece */
+  }
+
+  .register-form-container {
+    order: 1;
+    padding: 2rem 3rem;
+  }
+
+  .register-image {
+    order: 2;
+    height: 200px;
+  }
+
+  .register-title {
+    font-size: 3.6rem;
+    margin: 1rem 0 2rem;
+  }
+}
