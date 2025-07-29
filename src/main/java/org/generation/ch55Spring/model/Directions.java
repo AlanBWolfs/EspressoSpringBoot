@@ -34,6 +34,8 @@ public class Directions {
     @JoinColumn(name="user_id", nullable = false)
     //evitar ciclio infinito
     @JsonIgnore
-    private Users user;
+    private Usuarios usuario;
 
+    public void setUser(Usuarios usuario) {
+    }
 }

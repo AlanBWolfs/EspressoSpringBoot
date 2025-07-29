@@ -1,53 +1,52 @@
 package org.generation.ch55Spring.controller;
 
 import lombok.AllArgsConstructor;
-import org.apache.catalina.User;
 import org.generation.ch55Spring.dto.DirectionsRequest;
-import org.generation.ch55Spring.model.Users;
+import org.generation.ch55Spring.model.Usuarios;
 import org.generation.ch55Spring.service.UsersService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//http://localhost:8080/api/users
+//http://localhost:8080/api/usuarios/
 @RestController
-@RequestMapping(path="/api/users")
+@RequestMapping(path="/api/usuarios")
 @AllArgsConstructor
 public class UsersController {
     private final UsersService usersService;
     @GetMapping// http://localhost:8080/api/users/
-    public List<Users> getAllUsers(){
+    public List<Usuarios> getAllUsers(){
         return usersService.getAllUsers();
     }
 
     @GetMapping(path="{userId}") // http://localhost:8080/api/users/1
-    public Users getUserById(@PathVariable("userId")Long id){
+    public Usuarios getUserById(@PathVariable("userId")Long id){
         return usersService.getUserById(id);
     }
 
     @PostMapping
-    public Users addUser(@RequestBody Users user){
+    public Usuarios addUser(@RequestBody Usuarios user){
         return usersService.addUser(user);
     }
 
     @DeleteMapping(path = "{userId}") // http://localhost:8080/api/users/1
-    public Users deleteUserById(@PathVariable("userId")Long id){
+    public Usuarios deleteUserById(@PathVariable("userId")Long id){
         return usersService.deleteUserById(id);
     }
 
     @PutMapping(path = "{userId}")
-    public Users updateUserById(@PathVariable("userId")Long id,@RequestBody Users user){
+    public Usuarios updateUserById(@PathVariable("userId")Long id,@RequestBody Usuarios user){
         return usersService.updateUserById(id,user);
     }
 
     //peticion para agregar direccion
     @PostMapping(path = "{userId}/add-direction")//http://localhost:8080/api/users/userId/add-direction
-    public Users addUserDirection(@PathVariable("userId")Long id, @RequestBody DirectionsRequest directionsRequest){
+    public Usuarios addUserDirection(@PathVariable("userId")Long id, @RequestBody DirectionsRequest directionsRequest){
         return usersService.addDirectionUser(id, directionsRequest);
     }
 
     @PostMapping(path = "login") //http://localhost:8080/api/users/login
-    public boolean loginUser(@RequestBody Users user){
+    public boolean loginUser(@RequestBody Usuarios user){
         return usersService.validateUser(user);
     }
 }
