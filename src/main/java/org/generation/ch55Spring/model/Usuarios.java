@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,7 +17,7 @@ import java.util.List;
 @Setter
 @Getter
 
-public class Users {
+public class Usuarios {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario", nullable = false, unique = true)
@@ -34,4 +35,18 @@ public class Users {
     @Column(name = "contrasena", nullable = false, length = 30)
     private String contrasena;
 
+
+    //! Relaciones
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_rol")
+    private roles_descripcion rol;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<Transacciones> transacciones = new ArrayList<>();
+
+
+    /*
+    //Tabla principal
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Directions> directions;
+     */
 }
