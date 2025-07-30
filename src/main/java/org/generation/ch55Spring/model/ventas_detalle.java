@@ -71,7 +71,7 @@ public class ventas_detalle {
 
     @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "id_producto", insertable = false, updatable = false)
-   private Productos producto;
+   private Products producto;
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "id_usuario", insertable = false, updatable = false)
