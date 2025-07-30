@@ -32,7 +32,7 @@ public class Carrito {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_producto", nullable = false,
             foreignKey = @ForeignKey(name = "carrito_detalle_ibfk_2"))
-    private Products producto;
+    private Productos producto;
 
 
 }

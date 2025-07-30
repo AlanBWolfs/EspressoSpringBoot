@@ -75,7 +75,7 @@ public class VentasDetalle {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "id_producto", insertable = false, updatable = false)
-   private Products producto;
+   private Productos producto;
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JsonIgnore
