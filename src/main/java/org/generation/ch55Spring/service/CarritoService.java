@@ -12,6 +12,8 @@ public interface CarritoService {
 
     void removeProductFromCart(Long usuarioId, Long productoId);
 
+    void decreaseProductQuantity(Long usuarioId, Long productoId, Integer cantidad);
+
     void clearCart(Long usuarioId);
 
 }

@@ -33,6 +33,15 @@ public class CarritoController {
             @RequestParam Long productoId) {
         carritoService.removeProductFromCart(usuarioId, productoId);
     }
+    @PutMapping("/{usuarioId}/carrito/decrease")
+    public void decreaseProductQuantity(
+            @PathVariable Long usuarioId,
+            @RequestParam Long productoId,
+            @RequestParam Integer cantidad) {
+        carritoService.decreaseProductQuantity(usuarioId, productoId, cantidad);
+    }
+
+
 
     @DeleteMapping("/{usuarioId}/carrito/clear")
     public void clearCart(@PathVariable Long usuarioId) {

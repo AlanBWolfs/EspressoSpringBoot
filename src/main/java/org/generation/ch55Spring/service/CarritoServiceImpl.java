@@ -59,6 +59,23 @@ public class CarritoServiceImpl implements CarritoService {
     }
 
     @Override
+    public void decreaseProductQuantity(Long usuarioId, Long productoId, Integer cantidad) {
+        Carrito carrito = carritoRepository.findByUsuarioIdUsuarioAndProductoIdProducto(usuarioId, productoId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado en el carrito"));
+
+        int cantidadActual = carrito.getCantidad() != null ? carrito.getCantidad() : 0;
+        int nuevaCantidad = cantidadActual - cantidad;
+
+        if (nuevaCantidad > 0) {
+            carrito.setCantidad(nuevaCantidad);
+            carritoRepository.save(carrito);
+        } else {
+            // Si la nueva cantidad es 0 o menos, eliminar el producto del carrito
+            carritoRepository.delete(carrito);
+        }
+    }
+
+    @Override
     public void clearCart(Long usuarioId) {
         List<Carrito> items = carritoRepository.findByUsuarioIdUsuario(usuarioId);
         carritoRepository.deleteAll(items);
