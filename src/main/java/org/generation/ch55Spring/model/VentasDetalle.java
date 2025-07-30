@@ -21,23 +21,24 @@ public class VentasDetalle {
     private Long idDetalle;
 
     @Column(name = "id_transaccion", nullable = false)
-    private Integer idTransaccion;
+    private Long idTransaccion;
 
     @Column(name = "id_usuario", nullable = false)
-    private Integer idUsuario;
+    private Long idUsuario;
 
     @Column(name = "id_producto", nullable = false)
-    private Integer idProducto;
+    private Long idProducto;
 
     @Column(name = "precio_unitario", nullable = false, precision = 10, scale = 2)
     private BigDecimal precioUnitario;
 
     @Column(name = "cantidad", nullable = false)
-    private Integer cantidad;
+    private Long cantidad;
 
     @Column(name = "subtotal", precision = 10, scale = 2)
     private BigDecimal subtotal;
 
+    @Builder.Default
     @Column(name = "descuento", nullable = false, precision = 10, scale = 2)
     private BigDecimal descuento = BigDecimal.ZERO;
 
@@ -62,11 +63,10 @@ public class VentasDetalle {
     @Column(name = "estado_recoleccion", nullable = false, length = 45)
     private String estadoRecoleccion;
 
+    @Builder.Default
     @Column(name = "pago_realizado", nullable = false)
     private Boolean pagoRealizado = false;
 
-    //! Eliminar los @JsonIgnore una vez se implementen las otras tablas
-    //Relaciones opcionales si tienes las entidades correspondientes
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "id_transaccion", insertable = false, updatable = false)
@@ -75,10 +75,10 @@ public class VentasDetalle {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "id_producto", insertable = false, updatable = false)
-   private Productos producto;
+    private Productos producto;
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JsonIgnore
-   @JoinColumn(name = "id_usuario", insertable = false, updatable = false)
-   private Users usuario;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name = "id_usuario", insertable = false, updatable = false)
+    private Usuarios usuario;
 }

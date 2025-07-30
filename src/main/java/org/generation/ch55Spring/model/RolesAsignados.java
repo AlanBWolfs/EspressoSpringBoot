@@ -22,7 +22,7 @@ public class RolesAsignados {
     @MapsId("idUsuario")
     @JoinColumn(name = "id_usuario", nullable = false,
             foreignKey = @ForeignKey(name = "roles_asignados_ibfk_1"))
-    private Users usuario;
+    private Usuarios usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idRol")

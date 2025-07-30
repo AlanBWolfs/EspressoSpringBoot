@@ -1,22 +1,19 @@
 package org.generation.ch55Spring.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "roles_descripcion")
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
+@AllArgsConstructor
 public class RolesDescripcion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_rol", nullable = false, unique = true)
-    private Long id_rol;
+    private Long idRol;  // camelCase en Java, columna sigue siendo id_rol
 
     @Column(name = "rol", nullable = false, length = 50)
     private String rol;
