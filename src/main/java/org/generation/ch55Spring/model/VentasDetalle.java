@@ -1,5 +1,6 @@
 package org.generation.ch55Spring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,12 +13,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ventas_detalle {
+public class VentasDetalle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_detalle")
-    private Integer idDetalle;
+    private Long idDetalle;
 
     @Column(name = "id_transaccion", nullable = false)
     private Integer idTransaccion;
@@ -64,16 +65,20 @@ public class ventas_detalle {
     @Column(name = "pago_realizado", nullable = false)
     private Boolean pagoRealizado = false;
 
+    //! Eliminar los @JsonIgnore una vez se implementen las otras tablas
     //Relaciones opcionales si tienes las entidades correspondientes
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "id_transaccion", insertable = false, updatable = false)
     private Transacciones transaccion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "id_producto", insertable = false, updatable = false)
-   private Productos producto;
+    @JsonIgnore
+    @JoinColumn(name = "id_producto", insertable = false, updatable = false)
+   private Products producto;
 
    @ManyToOne(fetch = FetchType.LAZY)
+   @JsonIgnore
    @JoinColumn(name = "id_usuario", insertable = false, updatable = false)
-   private Usuarios usuario;
+   private Users usuario;
 }

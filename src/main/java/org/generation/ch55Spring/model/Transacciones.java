@@ -32,7 +32,7 @@ public class Transacciones {
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "id_usuario", nullable = false,
                 foreignKey = @ForeignKey(name = "fk_ventas_usuarios1"))
-        private Usuarios usuario;
+        private Users usuario;
 
         //! Genera automáticamente el valor de fecha
         @PrePersist
