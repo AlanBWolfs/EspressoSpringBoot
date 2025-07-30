@@ -22,11 +22,11 @@ public class Favoritos {
     @MapsId("idUsuario")
     @JoinColumn(name = "id_usuario", nullable = false,
             foreignKey = @ForeignKey(name = "favoritos_ibfk_1"))
-    private Usuarios usuario;
+    private Users usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idProducto")
     @JoinColumn(name = "id_producto", nullable = false,
             foreignKey = @ForeignKey(name = "favoritos_ibfk_2"))
-    private Productos producto;
+    private Products producto;
 }
