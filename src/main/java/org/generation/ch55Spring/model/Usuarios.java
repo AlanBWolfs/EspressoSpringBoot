@@ -2,7 +2,6 @@ package org.generation.ch55Spring.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class Usuarios {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuario", nullable = false, unique = true)
+    @Column(name = "id_usuario")   // 👈 obligamos a usar este nombre en la BD
     private Long idUsuario;
 
     @Column(name = "correo_electronico", nullable = false, unique = true, length = 100)

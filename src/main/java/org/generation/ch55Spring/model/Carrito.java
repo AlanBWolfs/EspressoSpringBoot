@@ -34,5 +34,4 @@ public class Carrito {
             foreignKey = @ForeignKey(name = "carrito_detalle_ibfk_2"))
     private Productos producto;
 
-
 }

@@ -13,8 +13,8 @@ public class Directions {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="id", nullable = false, unique = true)
-    private Long id;
+    @Column(name = "id_direccion")
+    private Long idDireccion;
 
     @Column(nullable = false)
     private String street;
@@ -29,7 +29,8 @@ public class Directions {
     private String country;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id_usuario", nullable = false)  // debe coincidir con el idUsuario en Usuarios
+    @JoinColumn(name="id_usuario", nullable = false)
     @JsonIgnore
     private Usuarios usuario;
+
 }

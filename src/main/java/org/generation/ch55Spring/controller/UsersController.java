@@ -4,49 +4,73 @@ import lombok.AllArgsConstructor;
 import org.generation.ch55Spring.dto.DirectionsRequest;
 import org.generation.ch55Spring.model.Usuarios;
 import org.generation.ch55Spring.service.UsersService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//http://localhost:8080/api/usuarios/
+// http://localhost:8080/api/usuarios/
 @RestController
-@RequestMapping(path="/api/usuarios")
+@RequestMapping(path = "/api/usuarios")
 @AllArgsConstructor
 public class UsersController {
+
     private final UsersService usersService;
-    @GetMapping// http://localhost:8080/api/users/
-    public List<Usuarios> getAllUsers(){
+
+    // GET todos los usuarios
+    @GetMapping
+    public List<Usuarios> getAllUsers() {
         return usersService.getAllUsers();
     }
 
-    @GetMapping(path="{userId}") // http://localhost:8080/api/users/1
-    public Usuarios getUserById(@PathVariable("userId")Long id){
+    // GET usuario por ID
+    @GetMapping(path = "/{userId}")
+    public Usuarios getUserById(@PathVariable("userId") Long id) {
         return usersService.getUserById(id);
     }
 
+    // POST crear usuario con validación de correo
     @PostMapping
-    public Usuarios addUser(@RequestBody Usuarios user){
-        return usersService.addUser(user);
+    public ResponseEntity<?> addUser(@RequestBody Usuarios user) {
+        boolean existeCorreo = usersService.validateUser(user);
+        if (existeCorreo) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("El correo electrónico ya está registrado.");
+        }
+
+        Usuarios nuevoUsuario = usersService.addUser(user);
+        return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(path = "{userId}") // http://localhost:8080/api/users/1
-    public Usuarios deleteUserById(@PathVariable("userId")Long id){
-        return usersService.deleteUserById(id);
+    // DELETE eliminar usuario
+    @DeleteMapping(path = "/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUserById(@PathVariable("userId") Long id) {
+        usersService.deleteUserById(id);
     }
 
-    @PutMapping(path = "{userId}")
-    public Usuarios updateUserById(@PathVariable("userId")Long id,@RequestBody Usuarios user){
-        return usersService.updateUserById(id,user);
+    // PUT actualizar usuario
+    @PutMapping(path = "/{userId}")
+    public Usuarios updateUserById(@PathVariable("userId") Long id, @RequestBody Usuarios user) {
+        return usersService.updateUserById(id, user);
     }
 
-    //peticion para agregar direccion
-    @PostMapping(path = "{userId}/add-direction")//http://localhost:8080/api/users/userId/add-direction
-    public Usuarios addUserDirection(@PathVariable("userId")Long id, @RequestBody DirectionsRequest directionsRequest){
+    // POST agregar dirección a un usuario
+    @PostMapping(path = "/{userId}/add-direction")
+    public Usuarios addUserDirection(@PathVariable("userId") Long id, @RequestBody DirectionsRequest directionsRequest) {
         return usersService.addDirectionUser(id, directionsRequest);
     }
 
-    @PostMapping(path = "login") //http://localhost:8080/api/users/login
-    public boolean loginUser(@RequestBody Usuarios user){
-        return usersService.validateUser(user);
+    // POST login usuario
+    @PostMapping(path = "/login")
+    public ResponseEntity<String> loginUser(@RequestBody Usuarios user) {
+        boolean valid = usersService.validateUser(user);
+        if (valid) {
+            return ResponseEntity.ok("Login exitoso");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo o contraseña incorrectos");
+        }
     }
 }

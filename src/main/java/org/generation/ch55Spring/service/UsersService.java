@@ -2,7 +2,6 @@ package org.generation.ch55Spring.service;
 
 import org.generation.ch55Spring.dto.DirectionsRequest;
 import org.generation.ch55Spring.model.Usuarios;
-import org.generation.ch55Spring.model.Usuarios;
 
 import java.util.List;
 

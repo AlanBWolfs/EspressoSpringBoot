@@ -1,101 +1,89 @@
 package org.generation.ch55Spring.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.generation.ch55Spring.dto.DirectionsRequest;
 import org.generation.ch55Spring.model.Directions;
 import org.generation.ch55Spring.model.Usuarios;
 import org.generation.ch55Spring.repository.DirectionsRepository;
 import org.generation.ch55Spring.repository.UsuariosRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UsersServiceImpl implements UsersService {
 
-    private final UsuariosRepository usersRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UsuariosRepository usuariosRepository;
     private final DirectionsRepository directionsRepository;
 
     @Override
     public List<Usuarios> getAllUsers() {
-        return usersRepository.findAll();
+        return usuariosRepository.findAll();
     }
 
     @Override
     public Usuarios getUserById(Long id) {
-        return usersRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("El usuario con el id " + id + " no existe"));
+        return usuariosRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 
     @Override
     public Usuarios addUser(Usuarios usuario) {
-        // Encriptar password antes de guardar
-        String hashedPassword = passwordEncoder.encode(usuario.getContrasena());
-        usuario.setContrasena(hashedPassword);
-        return usersRepository.save(usuario);
+        return usuariosRepository.save(usuario);
     }
 
     @Override
     public Usuarios deleteUserById(Long id) {
-        Optional<Usuarios> optionalUser = usersRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new IllegalArgumentException("El usuario con el id " + id + " no existe");
-        }
-        usersRepository.deleteById(id);
-        return optionalUser.get();
+        Usuarios usuario = getUserById(id);
+        usuariosRepository.delete(usuario);
+        return usuario;
     }
 
     @Override
     public Usuarios updateUserById(Long id, Usuarios userUpdated) {
-        Usuarios usuario = usersRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("El usuario con el id " + id + " no existe"));
+        Usuarios usuario = getUserById(id);
 
-        if (userUpdated.getCorreoElectronico() != null) usuario.setCorreoElectronico(userUpdated.getCorreoElectronico());
-        if (userUpdated.getNombreUsuario() != null) usuario.setNombreUsuario(userUpdated.getNombreUsuario());
-        if (userUpdated.getContrasena() != null) {
-            String hashedPassword = passwordEncoder.encode(userUpdated.getContrasena());
-            usuario.setContrasena(hashedPassword);
-        }
-        return usersRepository.save(usuario);
+        usuario.setCorreoElectronico(userUpdated.getCorreoElectronico());
+        usuario.setNombreUsuario(userUpdated.getNombreUsuario());
+        usuario.setNumeroTelefonico(userUpdated.getNumeroTelefonico());
+        usuario.setContrasena(userUpdated.getContrasena());
+        usuario.setRol(userUpdated.getRol());
+        // Otros campos que tengas que actualizar
+
+        return usuariosRepository.save(usuario);
     }
 
     @Override
-    public Usuarios addDirectionUser(Long id, DirectionsRequest directionsRequest) {
-        Usuarios usuario = usersRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("El usuario con el id " + id + " no existe"));
+    public Usuarios addDirectionUser(Long idUsuario, DirectionsRequest directionsRequest) {
+        Usuarios usuario = usuariosRepository.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Directions direction = new Directions();
+        Directions nuevaDireccion = new Directions();
+        nuevaDireccion.setStreet(directionsRequest.getStreet());
+        nuevaDireccion.setSuburb(directionsRequest.getSuburb());
+        nuevaDireccion.setZipCode(directionsRequest.getZipCode());
+        nuevaDireccion.setCountry(directionsRequest.getCountry());
 
-        if (directionsRequest.getStreet() != null) direction.setStreet(directionsRequest.getStreet());
-        if (directionsRequest.getSuburb() != null) direction.setSuburb(directionsRequest.getSuburb());
-        if (directionsRequest.getCountry() != null) direction.setCountry(directionsRequest.getCountry());
-        if (directionsRequest.getZipCode() != null) direction.setZipCode(directionsRequest.getZipCode());
+        // Asignar usuario a la dirección
+        nuevaDireccion.setUsuario(usuario);
 
-        // Asigna el usuario al objeto dirección
-        direction.setUsuario(usuario);
+        // Guardar la dirección
+        directionsRepository.save(nuevaDireccion);
 
-        directionsRepository.save(direction);
+        // Agregar la dirección a la lista de direcciones del usuario (asegúrate que directions esté inicializada)
+        usuario.getDirections().add(nuevaDireccion);
 
-        if (usuario.getDirections() == null) {
-            usuario.setDirections(new java.util.ArrayList<>());
-        }
+        // Guardar usuario actualizado (opcional si usas cascade)
+        usuariosRepository.save(usuario);
 
-        usuario.getDirections().add(direction);
-        return usersRepository.save(usuario);
+        return usuario;
     }
 
     @Override
     public boolean validateUser(Usuarios usuario) {
-        Optional<Usuarios> optionalUser = usersRepository.findByCorreoElectronico(usuario.getCorreoElectronico());
-
-        if (optionalUser.isEmpty()) {
-            throw new IllegalArgumentException("El correo o contraseña son incorrectos");
-        }
-
-        return passwordEncoder.matches(usuario.getContrasena(), optionalUser.get().getContrasena());
+        return usuariosRepository.findByCorreoElectronico(usuario.getCorreoElectronico())
+                .map(u -> u.getContrasena().equals(usuario.getContrasena()))
+                .orElse(false);
     }
 }
