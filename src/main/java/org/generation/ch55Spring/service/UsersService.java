@@ -1,22 +1,23 @@
 package org.generation.ch55Spring.service;
 
 import org.generation.ch55Spring.dto.DirectionsRequest;
-import org.generation.ch55Spring.model.Users;
+import org.generation.ch55Spring.model.Usuarios;
+import org.generation.ch55Spring.model.Usuarios;
 
 import java.util.List;
 
 public interface UsersService {
-    List<Users> getAllUsers();
+    List<Usuarios> getAllUsers();
 
-    Users getUserById(Long id);
+    Usuarios getUserById(Long id);
 
-    Users addUser(Users user);
+    Usuarios addUser(Usuarios usuario);
 
-    Users deleteUserById(Long id);
+    Usuarios deleteUserById(Long id);
 
-    Users updateUserById(Long id, Users userUpdated);
+    Usuarios updateUserById(Long id, Usuarios userUpdated);
 
-    Users addDirectionUser(Long id, DirectionsRequest directionsRequest);
+    Usuarios addDirectionUser(Long id, DirectionsRequest directionsRequest);
 
-    boolean validateUser(Users user);
+    boolean validateUser(Usuarios usuario);
 }

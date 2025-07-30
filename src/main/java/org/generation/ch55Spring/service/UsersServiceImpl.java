@@ -1,9 +1,11 @@
 package org.generation.ch55Spring.service;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.generation.ch55Spring.dto.DirectionsRequest;
 import org.generation.ch55Spring.model.Directions;
-import org.generation.ch55Spring.model.Users;
+import org.generation.ch55Spring.model.Usuarios;
 import org.generation.ch55Spring.repository.DirectionsRepository;
 import org.generation.ch55Spring.repository.UsersRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,70 +16,70 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Getter
+@Setter
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private final DirectionsRepository directionsRepository;
 
     @Override
-    public List<Users> getAllUsers() {
+    public List<Usuarios> getAllUsers() {
         return usersRepository.findAll();
     }
 
     @Override
-    public Users getUserById(Long id) {
-        return usersRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("El usuario con el id " + id + " no existe")
-        );
+    public Usuarios getUserById(Long id) {
+        return usersRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El usuario con el id " + id + " no existe"));
     }
 
     @Override
-    public Users addUser(Users user) {
-        String hashedPassword = this.passwordEncoder.encode(user.getPassword());
-        user.setPassword(hashedPassword);
-        return usersRepository.save(user);
+    public Usuarios addUser(Usuarios usuario) {
+        String hashedPassword = this.passwordEncoder.encode(usuario.getPassword());
+        usuario.setPassword(hashedPassword);
+        return usersRepository.save(usuario);
     }
 
     @Override
-    public Users deleteUserById(Long id) {
-        Optional<Users> optionalUser = usersRepository.findById(id);
+    public Usuarios deleteUserById(Long id) {
+        Optional<Usuarios> optionalUser = usersRepository.findById(id);
         if(optionalUser.isEmpty()) throw new IllegalArgumentException("El usuario con el id " + id + " no existe");
         usersRepository.deleteById(id);
         return optionalUser.get();
     }
 
     @Override
-    public Users updateUserById(Long id, Users userUpdated) {
-        Optional<Users> optionalUser =  usersRepository.findById(id);
+    public Usuarios updateUserById(Long id, Usuarios userUpdated) {
+        Optional<Usuarios> optionalUser = usersRepository.findById(id);
         if(optionalUser.isEmpty()) throw new IllegalArgumentException("El usuario con el id " + id + " no existe");
-        Users user = optionalUser.get();
-        if(userUpdated.getEmail() != null) user.setEmail(userUpdated.getEmail());
-        if(userUpdated.getName() != null) user.setName(userUpdated.getName());
-        if(userUpdated.getLastName() != null) user.setLastName(userUpdated.getLastName());
-        if(userUpdated.getPassword() != null) user.setPassword(passwordEncoder.encode(userUpdated.getPassword()));
-        return usersRepository.save(user);
+        Usuarios usuario = optionalUser.get();
+        if(userUpdated.getEmail() != null) usuario.setEmail(userUpdated.getEmail());
+        if(userUpdated.getName() != null) usuario.setName(userUpdated.getName());
+        if(userUpdated.getLastName() != null) usuario.setLastName(userUpdated.getLastName());
+        if(userUpdated.getPassword() != null) usuario.setPassword(passwordEncoder.encode(userUpdated.getPassword()));
+        return usersRepository.save(usuario);
     }
 
     @Override
-    public Users addDirectionUser(Long id, DirectionsRequest directionsRequest) {
-        Users user = usersRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("El usuario con el id " + id + " no existe")
-        );
+    public Usuarios addDirectionUser(Long id, DirectionsRequest directionsRequest) {
+        Usuarios usuario = usersRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El usuario con el id " + id + " no existe"));
         Directions direction = new Directions();
         if(directionsRequest.getStreet() != null) direction.setStreet(directionsRequest.getStreet());
         if(directionsRequest.getSuburb() != null) direction.setSuburb(directionsRequest.getSuburb());
         if(directionsRequest.getCountry() != null) direction.setCountry(directionsRequest.getCountry());
         if(directionsRequest.getZipCode() != null) direction.setZipCode(directionsRequest.getZipCode());
-        direction.setUser(user);
+        direction.setUser(usuario);
         directionsRepository.save(direction);
-        user.getDirections().add(direction);
-        return usersRepository.save(user);
+        usuario.getDirections().add(direction);
+        return usersRepository.save(usuario);
     }
 
     @Override
-    public boolean validateUser(Users user) {
-        Optional<Users> optionalUser = usersRepository.findByEmail(user.getEmail());
+    public boolean validateUser(Usuarios usuario) {
+        Optional<Usuarios> optionalUser = usersRepository.findByEmail(usuario.getEmail());
         if (optionalUser.isEmpty()) throw new IllegalArgumentException("El correo o contraseña son incorrectos");
-        return passwordEncoder.matches(user.getPassword(),optionalUser.get().getPassword());
+        return passwordEncoder.matches(usuario.getPassword(), optionalUser.get().getPassword());
     }
 }
