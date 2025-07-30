@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.generation.ch55Spring.model.Directions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class Usuarios {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_rol")
-    private roles_descripcion rol;
+    private RolesDescripcion rol;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Transacciones> transacciones = new ArrayList<>();
