@@ -1,72 +1,48 @@
 package org.generation.ch55Spring.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-//indica que es una tabla
+import java.math.BigDecimal;
+
 @Entity
-@Table(name = "products")
-public class Products {
+@Table(name = "productos")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class Productos {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
-    private Long id;
-    @Column(nullable = false)
-    private String name;
-    @Column(nullable = false)
-    private String description;
-    @Column(nullable = false)
-    private Integer quantity;
-    @Column(nullable = false)
-    private Double price;
+    @Column(name = "id_producto", nullable = false, unique = true)
+    private Long idProducto;
 
-    public Products(Long id, String name, String description, Integer quantity, Double price) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.quantity = quantity;
-        this.price = price;
-    }
+    @Column(name = "tipo", nullable = false, length = 50)
+    private String tipo;
 
-    public Products() {
-    }
+    @Column(name = "categoria", nullable = false, length = 50)
+    private String categoria;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "subcategoria", nullable = false, length = 50)
+    private String subcategoria;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(name = "producto_nombre", nullable = false, length = 100)
+    private String productoNombre;
 
-    public String getName() {
-        return name;
-    }
+    @Column(name = "descripcion", nullable = false, columnDefinition = "TEXT")
+    private String descripcion;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Column(name = "precio", nullable = false, precision = 10, scale = 2)
+    private BigDecimal precio;
 
-    public String getDescription() {
-        return description;
-    }
+    @Column(name = "imagen", columnDefinition = "TEXT")
+    private String imagen;
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    @Column(name = "en_menu")
+    private Boolean enMenu = true;
 
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
 }

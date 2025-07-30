@@ -75,7 +75,7 @@ public class VentasDetalle {
     @ManyToOne(fetch = FetchType.LAZY)
 <<<<<<< HEAD:src/main/java/org/generation/ch55Spring/model/ventas_detalle.java
    @JoinColumn(name = "id_producto", insertable = false, updatable = false)
-   private Products producto;
+   private Productos producto;
 =======
     @JsonIgnore
     @JoinColumn(name = "id_producto", insertable = false, updatable = false)
