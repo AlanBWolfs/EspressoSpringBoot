@@ -1,41 +1,36 @@
 package org.generation.ch55Spring.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name="directions")
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
+@AllArgsConstructor
 public class Directions {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="id", nullable = false, unique = true)
-    private Long id;
+    @Column(name = "id_direccion")
+    private Long idDireccion;
+
     @Column(nullable = false)
     private String street;
+
     @Column(nullable = false)
     private String suburb;
-    @Column(name="zip_code",nullable = false)
+
+    @Column(name="zip_code", nullable = false)
     private String zipCode;
+
     @Column(nullable = false)
     private String country;
 
-    //segunda parte de la relacion
-    @ManyToOne
-    //llave foranea
-    @JoinColumn(name="user_id", nullable = false)
-    //evitar ciclio infinito
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="id_usuario", nullable = false)
     @JsonIgnore
     private Usuarios usuario;
 
-    public void setUser(Usuarios usuario) {
-    }
 }

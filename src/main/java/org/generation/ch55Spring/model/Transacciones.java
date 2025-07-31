@@ -1,19 +1,15 @@
 package org.generation.ch55Spring.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transacciones")
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
+@AllArgsConstructor
 public class Transacciones {
 
     @Id
@@ -24,21 +20,13 @@ public class Transacciones {
     @Column(name = "fecha", nullable = false)
     private LocalDateTime fecha;
 
-    public class TransaccionDTO {
-        private Long idTransaccion;
-        private LocalDateTime fecha;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_ventas_usuarios1"))
+    private Usuarios usuario;
 
-        //! Relaciones
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "id_usuario", nullable = false,
-                foreignKey = @ForeignKey(name = "fk_ventas_usuarios1"))
-        private Users usuario;
-
-        //! Genera automáticamente el valor de fecha
-        @PrePersist
-        protected void onCreate() {
-            this.fecha = LocalDateTime.now();
-        }
-
+    @PrePersist
+    protected void onCreate() {
+        this.fecha = LocalDateTime.now();
     }
 }

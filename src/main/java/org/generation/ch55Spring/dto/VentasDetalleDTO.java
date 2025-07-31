@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 
 public class VentasDetalleDTO {
     private Long idDetalle;
-    private Integer idTransaccion;
-    private Integer idUsuario;
-    private Integer idProducto;
+    private Long idTransaccion;
+    private Long idUsuario;
+    private Long idProducto;
     private BigDecimal precioUnitario;
-    private Integer cantidad;
+    private Long cantidad;
     private BigDecimal descuento;
     private String metodoPago;
     private LocalDateTime fecha;
@@ -20,20 +20,20 @@ public class VentasDetalleDTO {
     public Long getIdDetalle() { return idDetalle; }
     public void setIdDetalle(Long idDetalle) { this.idDetalle = idDetalle; }
 
-    public Integer getIdTransaccion() { return idTransaccion; }
-    public void setIdTransaccion(Integer idTransaccion) { this.idTransaccion = idTransaccion; }
+    public Long getIdTransaccion() { return idTransaccion; }
+    public void setIdTransaccion(Long idTransaccion) { this.idTransaccion = idTransaccion; }
 
-    public Integer getIdUsuario() { return idUsuario; }
-    public void setIdUsuario(Integer idUsuario) { this.idUsuario = idUsuario; }
+    public Long getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(Long idUsuario) { this.idUsuario = idUsuario; }
 
-    public Integer getIdProducto() { return idProducto; }
-    public void setIdProducto(Integer idProducto) { this.idProducto = idProducto; }
+    public Long getIdProducto() { return idProducto; }
+    public void setIdProducto(Long idProducto) { this.idProducto = idProducto; }
 
     public BigDecimal getPrecioUnitario() { return precioUnitario; }
     public void setPrecioUnitario(BigDecimal precioUnitario) { this.precioUnitario = precioUnitario; }
 
-    public Integer getCantidad() { return cantidad; }
-    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
+    public Long getCantidad() { return cantidad; }
+    public void setCantidad(Long cantidad) { this.cantidad = cantidad; }
 
     public BigDecimal getDescuento() { return descuento; }
     public void setDescuento(BigDecimal descuento) { this.descuento = descuento; }
