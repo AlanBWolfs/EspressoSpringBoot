@@ -3,14 +3,13 @@ package org.generation.ch55Spring.service;
 import lombok.RequiredArgsConstructor;
 import org.generation.ch55Spring.dto.CarritoDTO;
 import org.generation.ch55Spring.model.Carrito;
-import org.generation.ch55Spring.model.Productos;
+import org.generation.ch55Spring.model.Producto;
 import org.generation.ch55Spring.model.Usuarios;
 import org.generation.ch55Spring.repository.CarritoRepository;
-import org.generation.ch55Spring.repository.ProductosRepository;
+import org.generation.ch55Spring.repository.ProductoRepository;
 import org.generation.ch55Spring.repository.UsuariosRepository;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +19,7 @@ public class CarritoServiceImpl implements CarritoService {
 
     private final CarritoRepository carritoRepository;
     private final UsuariosRepository usuariosRepository;
-    private final ProductosRepository productosRepository;
+    private final ProductoRepository productosRepository;
 
     @Override
     public List<CarritoDTO> getCartItems(Long usuarioId) {
@@ -36,7 +35,7 @@ public class CarritoServiceImpl implements CarritoService {
         Usuarios usuario = usuariosRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Productos producto = productosRepository.findById(productoId)
+        Producto producto = productosRepository.findById(productoId)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
         Carrito carrito = carritoRepository.findByUsuarioIdUsuarioAndProductoIdProducto(usuarioId, productoId)
@@ -88,7 +87,7 @@ public class CarritoServiceImpl implements CarritoService {
         dto.setCantidad(carrito.getCantidad());
         dto.setUsuarioId(carrito.getUsuario().getIdUsuario());
         dto.setProductoId(carrito.getProducto().getIdProducto());
-        dto.setNombreProducto(carrito.getProducto().getProductoNombre());
+        dto.setNombreProducto(carrito.getProducto().getNombre());
         dto.setPrecioProducto(carrito.getProducto().getPrecio());
         return dto;
     }

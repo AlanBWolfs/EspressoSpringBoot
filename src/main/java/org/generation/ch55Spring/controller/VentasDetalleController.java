@@ -1,60 +1,59 @@
 package org.generation.ch55Spring.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.generation.ch55Spring.model.VentasDetalle;
-import org.generation.ch55Spring.repository.VentasDetalleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.generation.ch55Spring.service.VentasDetalleService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/ventas-detalle")
+@RequestMapping("/api/ventas-detalle") // http://localhost:8080/api/ventas-detalle
+@RequiredArgsConstructor
 public class VentasDetalleController {
 
-    @Autowired
-    private VentasDetalleRepository ventasDetalleRepository;
+    private final VentasDetalleService ventasDetalleService;
 
-    // Obtener todos los registros
+    // 🔹 Obtener todos los detalles
     @GetMapping
     public List<VentasDetalle> getAllDetalles() {
-        return ventasDetalleRepository.findAll();
+        return ventasDetalleService.getAllDetalles();
     }
 
-    // Obtener un registro por ID
+    // 🔹 Obtener un detalle por ID
     @GetMapping("/{id}")
-    public ResponseEntity<VentasDetalle> getDetalleById(@PathVariable Long id) {
-        return ventasDetalleRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public VentasDetalle getDetalleById(@PathVariable Long id) {
+        return ventasDetalleService.getDetalleById(id);
     }
 
-    // Crear un nuevo registro
+    // 🔹 Obtener detalles por ID de usuario
+    @GetMapping("/usuario/{idUsuario}")
+    public List<VentasDetalle> getDetallesByUsuario(@PathVariable Long idUsuario) {
+        return ventasDetalleService.getDetallesByUsuario(idUsuario);
+    }
+
+    // 🔹 Obtener detalles por ID de transacción
+    @GetMapping("/transaccion/{idTransaccion}")
+    public List<VentasDetalle> getDetallesByTransaccion(@PathVariable Long idTransaccion) {
+        return ventasDetalleService.getDetallesByTransaccion(idTransaccion);
+    }
+
+    // 🔹 Crear un nuevo detalle de venta
     @PostMapping
     public VentasDetalle createDetalle(@RequestBody VentasDetalle detalle) {
-        return ventasDetalleRepository.save(detalle);
+        return ventasDetalleService.saveDetalle(detalle);
     }
 
-    // Actualizar un registro existente
+    // 🔹 Actualizar un detalle de venta
     @PutMapping("/{id}")
-    public ResponseEntity<VentasDetalle> updateDetalle(@PathVariable Long id, @RequestBody VentasDetalle detalleActualizado) {
-        return ventasDetalleRepository.findById(id)
-                .map(detalle -> {
-                    detalleActualizado.setIdDetalle(id);
-                    return ResponseEntity.ok(ventasDetalleRepository.save(detalleActualizado));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public VentasDetalle updateDetalle(@PathVariable Long id, @RequestBody VentasDetalle detalle) {
+        detalle.setIdDetalle(id);
+        return ventasDetalleService.saveDetalle(detalle);
     }
 
-    // Eliminar un registro
+    // 🔹 Eliminar un detalle de venta
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDetalle(@PathVariable Long id) {
-        if (ventasDetalleRepository.existsById(id)) {
-            ventasDetalleRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public void deleteDetalle(@PathVariable Long id) {
+        ventasDetalleService.deleteDetalle(id);
     }
 }
-
