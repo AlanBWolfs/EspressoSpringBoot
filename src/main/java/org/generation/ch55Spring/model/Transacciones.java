@@ -29,4 +29,7 @@ public class Transacciones {
     protected void onCreate() {
         this.fecha = LocalDateTime.now();
     }
+
+    public void setId(Long id) {
+    }
 }
