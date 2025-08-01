@@ -8,9 +8,7 @@ import java.util.List;
 public interface RolesAsignadosService {
     RolesAsignados save(RolesAsignados rolesAsignados);
     List<RolesAsignados> findAll();
-    RolesAsignados findById(Long id);
-    void deleteById(Long id);
-    RolesAsignados update(Long id, RolesAsignados rolesAsignados);
-
     RolesAsignados findById(RolesAsignadosId id);
+    void deleteById(RolesAsignadosId id);
+    RolesAsignados update(RolesAsignadosId id, RolesAsignados rolesAsignados);
 }
