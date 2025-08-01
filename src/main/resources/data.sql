@@ -1,10 +1,13 @@
--- Vaciar tablas
+DELETE FROM carrito;
+DELETE FROM transacciones;
 DELETE FROM productos;
 DELETE FROM subsubcategorias;
 DELETE FROM subcategorias;
 DELETE FROM categorias;
 
 -- Resetear AUTO_INCREMENT
+ALTER TABLE carrito AUTO_INCREMENT = 1;
+ALTER TABLE transacciones AUTO_INCREMENT = 1;
 ALTER TABLE productos AUTO_INCREMENT = 1;
 ALTER TABLE subsubcategorias AUTO_INCREMENT = 1;
 ALTER TABLE subcategorias AUTO_INCREMENT = 1;
