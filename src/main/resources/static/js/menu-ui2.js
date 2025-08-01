@@ -1,11 +1,11 @@
 import { mostrarModalPersonalizacion, inicializarPersonalizacion } from './modal-personalizacion.js';
 
-// Función para obtener productos desde backend con filtros tipo y categoria (subcategoria en este caso)
-async function fetchMenuData(tipo, subcategoria) {
+// Función para obtener productos desde backend con filtros tipo y categoria
+async function fetchMenuData(tipo, categoria) {
   try {
     const url = new URL('http://localhost:8080/api/productos');
     if (tipo) url.searchParams.append('tipo', tipo);
-    if (subcategoria) url.searchParams.append('subcategoria', subcategoria);
+    if (categoria) url.searchParams.append('categoria', categoria);
 
     const response = await fetch(url);
     if (!response.ok) throw new Error('Error al cargar productos');
@@ -64,65 +64,60 @@ export async function renderMenu(isAdmin = false) {
 
   const params = new URLSearchParams(window.location.search);
   const tipo = params.get('tipo');
-  const categoriaRaw = params.get('categoria');
+  const categoria = params.get('categoria');
 
-  // Mapeo para normalizar el nombre de la subcategoría según URL
-  const nombreSubcategoriaMap = {
-    'bebidas-frias': 'Bebidas Frías',
-    'frias': 'Bebidas Frías',
-    'frías': 'Bebidas Frías',
-    'bebidas-calientes': 'Bebidas Calientes',
-    'calientes': 'Bebidas Calientes',
-    'especiales': 'Especiales', // 👈 clave para alimentos
-    'desayunos': 'Desayunos',
-    'extras': 'Extras',
-  };
+  const productos = await fetchMenuData(tipo, categoria);
 
-  const categoria = nombreSubcategoriaMap[categoriaRaw?.toLowerCase()] || categoriaRaw;
-
-  let productos = [];
-
-  // 👇 Manejo especial para "Especiales"
-  if (categoria?.toLowerCase() === 'especiales') {
-    const especialesAlimentos = await fetchMenuData(tipo, 'Especiales');
-    const especialesBebidas = await fetchMenuData(tipo, 'Especiales1');
-    productos = [...especialesAlimentos, ...especialesBebidas];
-  } else {
-    productos = await fetchMenuData(tipo, categoria);
-  }
-
-  // ✅ Eliminar duplicados (por id si existe, si no por nombre)
-  const productosUnicos = [
-    ...new Map(productos.map(item => [item.id || item.nombre || item.productoNombre, item])).values()
-  ];
-
-  if (!productosUnicos.length) {
-    container.innerHTML = `<p>No se encontraron productos para la subcategoría "${categoria}".</p>`;
+  if (!productos.length) {
+    container.innerHTML = '<p>No se encontraron productos para esta categoría.</p>';
     return;
   }
 
   // Agrupar productos por subcategoría
-  const productosPorSubcategoria = productosUnicos.reduce((acc, producto) => {
+  const productosPorSubcategoria = productos.reduce((acc, producto) => {
     const subcat = producto.subcategoria || producto.subCategoria || 'Sin subcategoría';
     if (!acc[subcat]) acc[subcat] = [];
     acc[subcat].push(producto);
     return acc;
   }, {});
 
-  // Renderizado
-  for (const subcat in productosPorSubcategoria) {
+  if (categoria) {
+    const productosFiltrados = productosPorSubcategoria[categoria];
+
+    if (!productosFiltrados || productosFiltrados.length === 0) {
+      container.innerHTML = `<p>No se encontraron productos para la subcategoría "${categoria}".</p>`;
+      return;
+    }
+
     const h2 = document.createElement('h2');
-    h2.textContent = subcat;
+    h2.textContent = categoria;
     container.appendChild(h2);
 
     const grid = document.createElement('div');
     grid.className = 'subcategoria';
 
-    productosPorSubcategoria[subcat].forEach(item => {
+    productosFiltrados.forEach(item => {
       grid.appendChild(crearTarjeta(item, isAdmin));
     });
 
     container.appendChild(grid);
+
+  } else {
+    // Si no hay categoría, mostrar todas
+    for (const subcategoria in productosPorSubcategoria) {
+      const h2 = document.createElement('h2');
+      h2.textContent = subcategoria;
+      container.appendChild(h2);
+
+      const grid = document.createElement('div');
+      grid.className = 'subcategoria';
+
+      productosPorSubcategoria[subcategoria].forEach(item => {
+        grid.appendChild(crearTarjeta(item, isAdmin));
+      });
+
+      container.appendChild(grid);
+    }
   }
 }
 

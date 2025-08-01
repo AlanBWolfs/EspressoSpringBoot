@@ -29,10 +29,12 @@ export function actualizarBotonLogin() {
   }
 }
 
-// Inicialización general
+// ✅ Inicialización general
 document.addEventListener('DOMContentLoaded', () => {
+  // Cargar siempre navbar y footer
   cargarNavFooter();
 
+  // Si estamos en menu2.html
   if (window.location.pathname.includes('menu2.html')) {
     const params = new URLSearchParams(window.location.search);
     const isAdmin = params.get('admin') === 'true';
