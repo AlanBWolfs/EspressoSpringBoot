@@ -1,135 +1,31 @@
-import { menuElementos } from './menu-data.js';
 import { mostrarModalPersonalizacion, inicializarPersonalizacion } from './modal-personalizacion.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  const isAdmin = params.get('admin') === 'true';
+// Función para obtener productos desde backend con filtros tipo y categoria
+async function fetchMenuData(tipo, categoria) {
+  try {
+    const url = new URL('http://localhost:8080/api/productos');
+    if (tipo) url.searchParams.append('tipo', tipo);
+    if (categoria) url.searchParams.append('categoria', categoria);
 
-  renderMenu(isAdmin);
-
-  // Solo inicializa personalización si está presente el modal
-  if (document.getElementById('modalPersonalizacion')) {
-    inicializarPersonalizacion();
-  }
-
-
-  // Clicks globales para carrito, editar y eliminar
-  document.addEventListener('click', e => {
-    if (e.target.matches('.btn-cart')) {
-      const nombre = e.target.dataset.nombre;
-      const precio = parseFloat(e.target.dataset.precio);
-      const imagen = e.target.dataset.imagen;
-      mostrarModalPersonalizacion(nombre, precio, imagen);
-    }
-
-    if (e.target.matches('.btn-edit')) {
-      const card = e.target.closest('.card');
-      const nombre = card.querySelector('.card-title').textContent;
-      const descripcion = card.querySelector('.card-description').textContent;
-      const precio = parseFloat(card.querySelector('.card-price').textContent.replace('$', ''));
-      const imagen = card.querySelector('img').src;
-
-      document.getElementById('nombreProducto').value = nombre;
-      document.getElementById('descripcionProducto').value = descripcion;
-      document.getElementById('precioProducto').value = precio;
-      document.getElementById('imagenProducto').value = imagen;
-      document.getElementById('productoActual').value = nombre;
-
-      const modal = new bootstrap.Modal(document.getElementById('modalEditar'));
-      modal.show();
-    }
-
-    if (e.target.matches('.btn-delete')) {
-      const card = e.target.closest('.card');
-      const nombre = card.querySelector('.card-title').textContent;
-      if (confirm(`¿Seguro que quieres eliminar "${nombre}"?`)) {
-        card.remove();
-        console.log(`Producto eliminado: ${nombre}`);
-      }
-    }
-  });
-
-  // Submit del formulario de edición
-  const formEditar = document.getElementById('formEditarProducto');
-  if (formEditar) {
-    formEditar.addEventListener('submit', e => {
-      e.preventDefault();
-
-      const nuevoNombre = document.getElementById('nombreProducto').value;
-      const nuevaDescripcion = document.getElementById('descripcionProducto').value;
-      const nuevoPrecio = parseFloat(document.getElementById('precioProducto').value).toFixed(2);
-      const nuevaImagen = document.getElementById('imagenProducto').value;
-      const productoOriginal = document.getElementById('productoActual').value;
-
-      const cards = document.querySelectorAll('.card');
-      cards.forEach(card => {
-        const titulo = card.querySelector('.card-title');
-        if (titulo.textContent === productoOriginal) {
-          titulo.textContent = nuevoNombre;
-          card.querySelector('.card-description').textContent = nuevaDescripcion;
-          card.querySelector('.card-price').textContent = `$${nuevoPrecio}`;
-          card.querySelector('img').src = nuevaImagen;
-        }
-      });
-
-      bootstrap.Modal.getInstance(document.getElementById('modalEditar')).hide();
-      e.target.reset();
-    });
-  }
-});
-
-
-// Renderizador del menú
-export function renderMenu(isAdmin = false) {
-  //console.log(isAdmin ? '🛠️ Modo ADMIN (sin carrito)' : '👤 Modo USUARIO');
-
-  const container = document.getElementById('menu-container');
-  if (!container) {
-    
-    return;
-  }
-
-  container.innerHTML = '';
-
-  const params = new URLSearchParams(window.location.search);
-  const tipo = params.get('tipo');
-  const categoria = params.get('categoria');
-
-  
-  const categoriaDatos = menuElementos[tipo]?.[categoria];
-  /*if (!categoriaDatos) {
-    container.innerHTML = `<p>No se encontró la categoría "${categoria}" para el tipo "${tipo}".</p>`;
-    return;
-  }*/
-
-  for (const subcategoria in categoriaDatos) {
-    const h2 = document.createElement('h2');
-    h2.textContent = subcategoria;
-    container.appendChild(h2);
-
-    const grid = document.createElement('div');
-    grid.className = 'subcategoria';
-
-    const items = categoriaDatos[subcategoria];
-    if (Array.isArray(items)) {
-      items.forEach(item => {
-        grid.appendChild(crearTarjeta(item, isAdmin));
-      });
-    }
-
-    container.appendChild(grid);
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Error al cargar productos');
+    const productos = await response.json();
+    return productos;
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 }
 
-// Crear la tarjeta de producto
+// Crear tarjeta HTML de producto
 function crearTarjeta(item, isAdmin) {
   const card = document.createElement('div');
   card.className = 'card';
 
-  const nombre = item.name || item.nombre || 'Sin nombre';
-  const descripcion = item.description || item.descripcion || '';
-  const precio = item.price !== undefined ? item.price : (item.precio !== undefined ? item.precio : 0);
-  const imagen = item.image || item.imagen || '../assets/default.png';
+  const nombre = item.productoNombre || item.name || item.nombre || 'Sin nombre';
+  const descripcion = item.descripcion || item.description || '';
+  const precio = item.precio !== undefined ? item.precio : (item.price !== undefined ? item.price : 0);
+  const imagen = item.imagen || item.image || '../assets/default.png';
 
   let botonesHTML = '';
 
@@ -159,48 +55,94 @@ function crearTarjeta(item, isAdmin) {
   return card;
 }
 
+// Función principal para renderizar menú, mostrando sólo la subcategoría seleccionada
+export async function renderMenu(isAdmin = false) {
+  const container = document.getElementById('menu-container');
+  if (!container) return;
 
+  container.innerHTML = '';
 
-document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
-  const isAdmin = params.get('admin') === 'true';
+  const tipo = params.get('tipo');
+  const categoriaRaw = params.get('categoria');
 
-  renderMenu(isAdmin);
+  // 🔥 Normalización de categorías (lo que viene en la URL → lo que está en BD)
+  const nombreSubcategoriaMap = {
+    'frias': 'Bebidas Frías',
+    'frías': 'Bebidas Frías',
+    'bebidas-frias': 'Bebidas Frías',
 
-  document.addEventListener('click', e => {
-    if (e.target.matches('.btn-cart')) {
-      const nombre = e.target.dataset.nombre;
-      const precio = parseFloat(e.target.dataset.precio);
-      const imagen = e.target.dataset.imagen;
+    'calientes': 'Bebidas Calientes',
+    'bebidas-calientes': 'Bebidas Calientes',
 
-      mostrarModalPersonalizacion(nombre, precio, imagen);
+    'especiales': 'Especiales',
+    'desayunos': 'Desayunos',
+    'extras': 'Extras',
+  };
+
+  const categoria = nombreSubcategoriaMap[categoriaRaw?.toLowerCase()] || categoriaRaw;
+
+  const productos = await fetchMenuData(tipo, categoria);
+
+  if (!productos.length) {
+    container.innerHTML = `<p>No se encontraron productos para la subcategoría "${categoria}".</p>`;
+    return;
+  }
+
+  // Agrupar productos por subcategoría
+  const productosPorSubcategoria = productos.reduce((acc, producto) => {
+    const subcat = producto.subcategoria || producto.subCategoria || 'Sin subcategoría';
+    if (!acc[subcat]) acc[subcat] = [];
+    acc[subcat].push(producto);
+    return acc;
+  }, {});
+
+  if (categoria) {
+    const productosFiltrados = productosPorSubcategoria[categoria];
+
+    if (!productosFiltrados || productosFiltrados.length === 0) {
+      container.innerHTML = `<p>No se encontraron productos para la subcategoría "${categoria}".</p>`;
+      return;
     }
 
-    if (e.target.matches('.btn-edit')) {
-      const card = e.target.closest('.card');
-      const nombre = card.querySelector('.card-title').textContent;
-      const descripcion = card.querySelector('.card-description').textContent;
-      const precio = parseFloat(card.querySelector('.card-price').textContent.replace('$', ''));
-      const imagen = card.querySelector('img').src;
+    const h2 = document.createElement('h2');
+    h2.textContent = categoria;
+    container.appendChild(h2);
 
-      document.getElementById('nombreProducto').value = nombre;
-      document.getElementById('descripcionProducto').value = descripcion;
-      document.getElementById('precioProducto').value = precio;
-      document.getElementById('imagenProducto').value = imagen;
-      document.getElementById('productoActual').value = nombre;
+    const grid = document.createElement('div');
+    grid.className = 'subcategoria';
 
-      const modal = new bootstrap.Modal(document.getElementById('modalEditar'));
-      modal.show();
+    productosFiltrados.forEach(item => {
+      grid.appendChild(crearTarjeta(item, isAdmin));
+    });
+
+    container.appendChild(grid);
+
+  } else {
+    // Si no hay categoría, mostrar todas
+    for (const subcategoria in productosPorSubcategoria) {
+      const h2 = document.createElement('h2');
+      h2.textContent = subcategoria;
+      container.appendChild(h2);
+
+      const grid = document.createElement('div');
+      grid.className = 'subcategoria';
+
+      productosPorSubcategoria[subcategoria].forEach(item => {
+        grid.appendChild(crearTarjeta(item, isAdmin));
+      });
+
+      container.appendChild(grid);
     }
+  }
+}
 
-    if (e.target.matches('.btn-delete')) {
-      const card = e.target.closest('.card');
-      const nombre = card.querySelector('.card-title').textContent;
-      if (confirm(`¿Seguro que quieres eliminar "${nombre}"?`)) {
-        card.remove();
-        console.log(`Producto eliminado: ${nombre}`);
-      }
-    }
-  });
-
- })
+// Listener global para clicks en botones dentro del menú
+document.addEventListener('click', e => {
+  if (e.target.matches('.btn-cart')) {
+    const nombre = e.target.dataset.nombre;
+    const precio = parseFloat(e.target.dataset.precio);
+    const imagen = e.target.dataset.imagen;
+    mostrarModalPersonalizacion(nombre, precio, imagen);
+  }
+});
