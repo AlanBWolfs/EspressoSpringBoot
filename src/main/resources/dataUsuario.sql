@@ -54,8 +54,8 @@ CREATE TABLE directions (
 
 -- =========================
 -- USUARIOS DE PRUEBA
--- (Las contraseñas deben estar encriptadas con BCrypt)
+-- (Las contraseñas están encriptadas con BCrypt para '123456')
 -- =========================
 INSERT INTO usuarios (correo_electronico, nombre_usuario, numero_telefonico, contrasena, id_rol) VALUES
-('admin@espresso.com', 'Administrador', '5551234567', '$2a$10$HASH_BCRYPT_ADMIN', 1), -- admin
-('cliente@mail.com', 'Cliente Demo', '5559876543', '$2a$10$HASH_BCRYPT_CLIENTE', 2); -- cliente
+('admin@espresso.com', 'Administrador', '5551234567', '$2a$10$7Q7Ete49XytP9GqAZkRHOunM/hP8SCN/I2dkTJDtF/wROFZ4MyeUO', 1),
+('cliente@mail.com', 'Cliente Demo', '5559876543', '$2a$10$Cjqlmjp9Zm3Md/DzqNwE.e3LSKBQb7RNV8veZhCyHoBYtnPlUif62', 2);
