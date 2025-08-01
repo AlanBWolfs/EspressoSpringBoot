@@ -28,5 +28,5 @@ public class Favoritos {
     @MapsId("idProducto")
     @JoinColumn(name = "id_producto", nullable = false,
             foreignKey = @ForeignKey(name = "favoritos_ibfk_2"))
-    private Productos producto;
+    private Producto producto;
 }

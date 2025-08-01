@@ -31,7 +31,7 @@ export function actualizarBotonLogin() {
 
 // Inicialización general
 document.addEventListener('DOMContentLoaded', () => {
-  cargarNavFooter(); 
+  cargarNavFooter();
 
   if (window.location.pathname.includes('menu2.html')) {
     const params = new URLSearchParams(window.location.search);
