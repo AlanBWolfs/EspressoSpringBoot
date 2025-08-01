@@ -7,23 +7,11 @@ import java.util.List;
 
 public interface UsuarioService {
 
-    List<Usuarios> getAllUsers();
+    Usuarios registrarUsuario(UsuarioRegistroDTO dto);
 
     Usuarios getUserById(Long id);
 
-    Usuarios addUser(Usuarios usuario);
+    List<Usuarios> getAllUsers();
 
-    Usuarios deleteUserById(Long id);
-
-    Usuarios updateUserById(Long id, Usuarios userUpdated);
-
-    Usuarios addDirectionUser(Long id, Object directionsRequest); // Puedes definir mejor el tipo después
-
-    boolean validateUser(Usuarios usuario);
-
-    Usuarios registrarUsuario(UsuarioRegistroDTO dto);
-
-    // Método para login: validar correo y contraseña
-    Usuarios validarUsuarioLogin(String correoElectronico, String password);
-
+    Usuarios validarUsuarioLogin(String correo, String contrasena);
 }

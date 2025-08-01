@@ -20,6 +20,5 @@ public class RolesDescripcion {
     @Column(name = "rol", nullable = false, length = 50)
     private String rol;
 
-    public void setId(Long id) {
-    }
+    // No es necesario ningún método manual para setIdRol ni getIdRol
 }

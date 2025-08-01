@@ -38,9 +38,12 @@ public class RolesDescripcionServiceImpl implements RolesDescripcionService {
     @Override
     public RolesDescripcion update(Long id, RolesDescripcion rolesDescripcion) {
         if (rolesDescripcionRepository.existsById(id)) {
-            rolesDescripcion.setId(id);
+            // Cambiar setId por setIdRol según el nombre de tu propiedad en RolesDescripcion
+            rolesDescripcion.setIdRol(id);
             return rolesDescripcionRepository.save(rolesDescripcion);
         }
         return null;
     }
+
+
 }

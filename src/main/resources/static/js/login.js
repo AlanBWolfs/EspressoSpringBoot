@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const passwordInput = document.getElementById("password");
   const loginError = document.getElementById("loginError");
 
-  form.addEventListener("submit", function (event) {
+  form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     // Limpieza visual previa
@@ -30,34 +30,45 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Obtener usuario guardado en localStorage
-    const userData = JSON.parse(localStorage.getItem("userData"));
+    try {
+      // 🔗 Llamada al backend Spring Boot
+      const response = await fetch("http://localhost:8080/api/usuarios/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          correoElectronico: emailInput.value,
+          contrasena: passwordInput.value,
+        }),
+      });
 
-    if (
-      userData &&
-      emailInput.value === userData.email &&
-      passwordInput.value === userData.password
-    ) {
-      // Sesión activa
-      localStorage.setItem("clienteLogueado", "true");
-      localStorage.setItem("clienteNombre", userData.nombre || "Usuario");
-      localStorage.setItem("clienteCorreo", userData.email);
+      if (response.ok) {
+        const usuario = await response.json();
 
-      // Separación de roles
-      const correoAdmin = "atencion.cafeespresso@gmail.com";
-      const rolAsignado =
-        userData.email === correoAdmin ? "admin" : "cliente";
-      localStorage.setItem("rolUsuario", rolAsignado);
+        // Guardar datos en localStorage (para mantener sesión)
+        localStorage.setItem("clienteLogueado", "true");
+        localStorage.setItem("clienteNombre", usuario.nombre || "Usuario");
+        localStorage.setItem("clienteCorreo", usuario.correoElectronico);
 
-      loginError.style.display = "none";
-      alert("¡Inicio de sesión exitoso!");
+        // Separación de roles (admin / cliente)
+        const correoAdmin = "atencion.cafeespresso@gmail.com";
+        const rolAsignado =
+          usuario.correoElectronico === correoAdmin ? "admin" : "cliente";
+        localStorage.setItem("rolUsuario", rolAsignado);
 
-      window.location.href = "/index.html"; 
-    } else {
-      loginError.textContent = "Correo o contraseña incorrectos.";
+        alert("¡Inicio de sesión exitoso!");
+        window.location.href = "/index.html"; // redirigir a home
+      } else {
+        const errorMsg = await response.text();
+        loginError.textContent = errorMsg || "Correo o contraseña incorrectos.";
+        loginError.style.display = "block";
+        emailInput.classList.add("is-invalid");
+        passwordInput.classList.add("is-invalid");
+      }
+    } catch (err) {
+      loginError.textContent = "Error de conexión con el servidor.";
       loginError.style.display = "block";
-      emailInput.classList.add("is-invalid");
-      passwordInput.classList.add("is-invalid");
     }
   });
 });
