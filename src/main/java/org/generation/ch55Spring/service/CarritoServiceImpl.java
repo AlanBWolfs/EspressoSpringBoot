@@ -7,7 +7,7 @@ import org.generation.ch55Spring.model.Producto;
 import org.generation.ch55Spring.model.Usuarios;
 import org.generation.ch55Spring.repository.CarritoRepository;
 import org.generation.ch55Spring.repository.ProductoRepository;
-import org.generation.ch55Spring.repository.UsuariosRepository;
+import org.generation.ch55Spring.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class CarritoServiceImpl implements CarritoService {
 
     private final CarritoRepository carritoRepository;
-    private final UsuariosRepository usuariosRepository;
+    private final UsuarioRepository usuariosRepository;
     private final ProductoRepository productosRepository;
 
     @Override

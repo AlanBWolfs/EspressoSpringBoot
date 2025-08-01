@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const confirmPasswordInput = document.getElementById("confirmPassword");
   const confirmFeedback = document.getElementById("confirmPasswordFeedback");
 
-  form.addEventListener("submit", function (event) {
+  form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     let valid = true;
@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
       emailInput.classList.add("is-invalid");
       valid = false;
     }
+
     const passwordValue = passwordInput.value.trim();
     const confirmValue = confirmPasswordInput.value.trim();
 
@@ -52,16 +53,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!valid) return;
 
-    // Guardar en localStorage
+    // Preparar objeto para el backend
     const nombreCompleto = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-    const userData = {
+    const usuarioDTO = {
       nombre: nombreCompleto,
-      email: emailInput.value.trim(),
-      password: passwordValue
+      correoElectronico: emailInput.value.trim(),
+      contrasena: passwordValue
     };
 
-    localStorage.setItem("userData", JSON.stringify(userData));
-    alert("Registro exitoso. ¡Ya puedes iniciar sesión!");
-    window.location.href = "/pages/login.html";
+    try {
+      // 🔗 Llamada al backend
+      const response = await fetch("http://localhost:8080/api/usuarios/registro", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(usuarioDTO),
+      });
+
+      if (response.ok) {
+        alert("✅ Registro exitoso. ¡Ya puedes iniciar sesión!");
+        window.location.href = "/pages/login.html";
+      } else if (response.status === 409) {
+        // Conflicto: correo ya registrado
+        emailInput.classList.add("is-invalid");
+        emailInput.nextElementSibling.textContent = "El correo ya está registrado.";
+      } else {
+        const errorMsg = await response.text();
+        alert(" Error en el registro: " + errorMsg);
+      }
+    } catch (error) {
+      alert("Error de conexión con el servidor.");
+    }
   });
 });
