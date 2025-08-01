@@ -64,12 +64,28 @@ export async function renderMenu(isAdmin = false) {
 
   const params = new URLSearchParams(window.location.search);
   const tipo = params.get('tipo');
-  const categoria = params.get('categoria');
+  const categoriaRaw = params.get('categoria');
+
+  // 🔥 Normalización de categorías (lo que viene en la URL → lo que está en BD)
+  const nombreSubcategoriaMap = {
+    'frias': 'Bebidas Frías',
+    'frías': 'Bebidas Frías',
+    'bebidas-frias': 'Bebidas Frías',
+
+    'calientes': 'Bebidas Calientes',
+    'bebidas-calientes': 'Bebidas Calientes',
+
+    'especiales': 'Especiales',
+    'desayunos': 'Desayunos',
+    'extras': 'Extras',
+  };
+
+  const categoria = nombreSubcategoriaMap[categoriaRaw?.toLowerCase()] || categoriaRaw;
 
   const productos = await fetchMenuData(tipo, categoria);
 
   if (!productos.length) {
-    container.innerHTML = '<p>No se encontraron productos para esta categoría.</p>';
+    container.innerHTML = `<p>No se encontraron productos para la subcategoría "${categoria}".</p>`;
     return;
   }
 
