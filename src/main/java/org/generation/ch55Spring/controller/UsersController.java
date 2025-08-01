@@ -3,7 +3,7 @@ package org.generation.ch55Spring.controller;
 import lombok.AllArgsConstructor;
 import org.generation.ch55Spring.dto.DirectionsRequest;
 import org.generation.ch55Spring.model.Usuarios;
-import org.generation.ch55Spring.service.UsersService;
+import org.generation.ch55Spring.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UsersController {
 
-    private final UsersService usersService;
+    private final UsuarioService usersService;
 
     // GET todos los usuarios
     @GetMapping

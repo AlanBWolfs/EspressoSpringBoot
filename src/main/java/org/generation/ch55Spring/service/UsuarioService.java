@@ -1,11 +1,12 @@
 package org.generation.ch55Spring.service;
 
 import org.generation.ch55Spring.dto.DirectionsRequest;
+import org.generation.ch55Spring.dto.UsuarioRegistroDTO;
 import org.generation.ch55Spring.model.Usuarios;
 
 import java.util.List;
 
-public interface UsersService {
+public interface UsuarioService {
     List<Usuarios> getAllUsers();
 
     Usuarios getUserById(Long id);
@@ -19,4 +20,7 @@ public interface UsersService {
     Usuarios addDirectionUser(Long id, DirectionsRequest directionsRequest);
 
     boolean validateUser(Usuarios usuario);
+
+
+    Usuarios registrarUsuario(UsuarioRegistroDTO dto);
 }
